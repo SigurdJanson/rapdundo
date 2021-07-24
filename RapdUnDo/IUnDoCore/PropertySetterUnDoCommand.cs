@@ -37,16 +37,16 @@ namespace RapdUnDo.IUndoCore
         /// The name of the property that is to be changed. Use <c>nameof(...)</c> to set this parameter.
         /// The property must be public.
         /// </param>
-        public PropertySetterUnDoCommand(TO _Object, TV _NewValue, string _PropertyName)
+        public PropertySetterUnDoCommand(TO _Object, string _PropertyName, TV _NewValue)
         {
             if (_Object is null) throw new ArgumentNullException(nameof(_Object));
             if (_Object.GetType().GetProperty(_PropertyName) == null)
                 throw new ArgumentException($"Property '{_PropertyName}' does not exist", nameof(_PropertyName));
 
+            PropertyName = _PropertyName;
             this.Ref = _Object; // keep the reference
             OldValue = Property;
             NewValue = _NewValue;
-            PropertyName = _PropertyName;
         }
 
         /// <inheritdoc/>
