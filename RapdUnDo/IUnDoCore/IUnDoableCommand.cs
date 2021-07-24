@@ -18,6 +18,11 @@ namespace RapdUnDo.IUndoCore
         /// </summary>
         public void Revert();
 
-        //public RenderFragment DisplayCommand();
+        /// <summary>
+        /// Return a piece of a Blazor render fragment that can be displayed in a window
+        /// to explain users what happens for them decide whether they want to undo or not.
+        /// </summary>
+        /// <returns>A (hopefully) user-friendly display of the command's effects.</returns>
+        public RenderFragment DisplayCommand();
     }
 }

@@ -37,6 +37,8 @@ namespace RapdUnDo.IUndoCore
         /// The name of the property that is to be changed. Use <c>nameof(...)</c> to set this parameter.
         /// The property must be public.
         /// </param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public PropertySetterUnDoCommand(TO _Object, string _PropertyName, TV _NewValue)
         {
             if (_Object is null) throw new ArgumentNullException(nameof(_Object));
@@ -62,6 +64,21 @@ namespace RapdUnDo.IUndoCore
         }
 
         /// <inheritdoc/>
-        //public RenderFragment DisplayCommand() { return new UnDoCoreDefaultUI(); }
+        public RenderFragment DisplayCommand() 
+        {
+            RenderFragment ToDisplay = b => // b is a RenderTreeBuilder
+            {
+                int i = 0;
+                b.OpenElement(i++, "div");
+                    b.OpenElement(i++, "p");
+                        b.AddContent(i++, $"Old value: {OldValue}");
+                    b.CloseElement();
+                    b.OpenElement(i++, "p");
+                        b.AddContent(i++, $"New value: {NewValue}");
+                    b.CloseElement();
+                b.CloseElement();
+            };
+            return ToDisplay; 
+        }
     }
 }
