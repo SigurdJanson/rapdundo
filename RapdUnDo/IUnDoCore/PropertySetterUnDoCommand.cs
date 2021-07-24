@@ -4,38 +4,47 @@ using System;
 namespace RapdUnDo.IUndoCore
 {
     /// <summary>
-    /// 
+    /// Generic undoable command class that allows setting properties and undo this.
     /// </summary>
-    /// <typeparam name="TO"></typeparam>
-    /// <typeparam name="TV"></typeparam>
+    /// <typeparam name="TO">Type of the object</typeparam>
+    /// <typeparam name="TV">Type of the object's property</typeparam>
     public class PropertySetterUnDoCommand<TO, TV> : IUnDoableCommand where TO : class where TV : IConvertible
     {
+        /// <summary>Value before executing the command</summary>
         public TV OldValue { get; protected set; }
+        /// <summary>Value AFTER executing the command</summary>
         public TV NewValue { get; protected set; }
 
+        /// <summary>The object reference</summary>
         public TO Ref { get; protected set; }
 
+        /// <summary>The name</summary>
         public string PropertyName { get; protected set; }
 
+        /// <summary>Direct access to the property <c>PropertyName</c> of object <c>Ref</c></summary>
         protected TV Property
         {
-            get => (TV)Ref.GetType().GetProperty(PropertyName).GetValue(Ref, null);
+            get => (TV)Ref.GetType().GetProperty(PropertyName).GetValue(Ref);
             set => Ref.GetType().GetProperty(PropertyName).SetValue(Ref, value);
         }
 
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
-        /// <param name="_Object"></param>
-        /// <param name="_NewValue"></param>
-        /// <param name="_PropertyName"></param>
+        /// <param name="_Object">The reference object that is going to be modified by the command.</param>
+        /// <param name="_NewValue">The value after executing the command</param>
+        /// <param name="_PropertyName">
+        /// The name of the property that is to be changed. Use <c>nameof(...)</c> to set this parameter.
+        /// The property must be public.
+        /// </param>
         public PropertySetterUnDoCommand(TO _Object, TV _NewValue, string _PropertyName)
         {
+            if (_Object is null) throw new ArgumentNullException(nameof(_Object));
             if (_Object.GetType().GetProperty(_PropertyName) == null)
                 throw new ArgumentException($"Property '{_PropertyName}' does not exist", nameof(_PropertyName));
 
             this.Ref = _Object; // keep the reference
-            OldValue = (TV)Ref.GetType().GetProperty(PropertyName).GetValue(Ref, null); ;
+            OldValue = Property;
             NewValue = _NewValue;
             PropertyName = _PropertyName;
         }
