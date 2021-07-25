@@ -17,7 +17,7 @@ namespace RapdUnDo.IUndoCore
         /// </summary>
         /// <param name="parameter">Data used by the command. 
         /// If the command does not require data to be passed, this object can be set to <c>null</c>.</param>
-        public void Revert(object? parameter);
+        public void Revoke(object? parameter);
 
         /// <summary>
         /// Defines the method that determines whether the command can revert in its current state.
@@ -26,12 +26,12 @@ namespace RapdUnDo.IUndoCore
         /// <param name="parameter">Data used by the command. 
         /// If the command does not require data to be passed, this object can be set to <c>null</c>.</param>
         /// <returns><c>true</c> if this command can be executed; otherwise, <c>false</c>.</returns>
-        public bool CanRevert(object? parameter);
+        public bool CanRevoke(object? parameter);
 
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should revert.
         /// </summary>
-        /// <remarks>Normally, a command source calls <see cref="CanRevert">CanRevert</see> on the command when this event occurs.</remarks>
+        /// <remarks>Normally, a command source calls <see cref="CanRevoke">CanRevert</see> on the command when this event occurs.</remarks>
         public event EventHandler? CanRevertChanged;
 
 

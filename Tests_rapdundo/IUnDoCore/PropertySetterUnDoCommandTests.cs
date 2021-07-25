@@ -53,7 +53,7 @@ namespace Tests_rapdundo.IUnDoCore
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
             propertySetterUnDoCommand.Execute();
             Assume.That(TestObject.Name, Is.EqualTo(NewName));
-            propertySetterUnDoCommand.Revert();
+            propertySetterUnDoCommand.Revoke();
 
             // Assert
             Assert.AreEqual(DefaultName, TestObject.Name);

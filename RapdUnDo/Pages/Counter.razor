@@ -31,7 +31,7 @@
         }
         finally
         {
-            if (CmdCount?.CanRevert() ?? false)
+            if (CmdCount?.CanRevoke() ?? false)
                 Snackbar.Add("It is done.", Severity.Normal, config =>
                 {
                     config.Action = "Undo";
@@ -47,8 +47,8 @@
 
     private void UndoIncrement(IUnDoableCommand command)
     {
-        if (command.CanRevert(null))
-            command.Revert(null);
+        if (command.CanRevoke(null))
+            command.Revoke(null);
         Snackbar.Add("Counter has been decremented again");
         StateHasChanged();
     }

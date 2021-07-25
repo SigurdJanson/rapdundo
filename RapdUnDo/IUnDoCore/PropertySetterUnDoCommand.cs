@@ -70,7 +70,7 @@ namespace RapdUnDo.IUndoCore
         public event EventHandler? CanExecuteChanged;
 
         /// <inheritdoc/>
-        public void Revert(object? parameter = null)
+        public void Revoke(object? parameter = null)
         {
             if (ExecutionTimes <= 0) 
                 throw new Exception("Command cannot be executed");
@@ -80,7 +80,7 @@ namespace RapdUnDo.IUndoCore
         }
 
         /// <inheritdoc/>
-        public bool CanRevert(object? parameter = null) => ExecutionTimes > 0;
+        public bool CanRevoke(object? parameter = null) => ExecutionTimes > 0;
 
         /// <inheritdoc/>
         public event EventHandler? CanRevertChanged;
@@ -100,7 +100,7 @@ namespace RapdUnDo.IUndoCore
                 b.AddContent(i++, $"New value: {NewValue}");
                 b.CloseElement();
                 b.CloseElement();
-            }; 
+            };
         }
     }
 
