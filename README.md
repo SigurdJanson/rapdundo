@@ -20,14 +20,27 @@ Of course, it helps with slips. Users have the chance to go back one step and re
 
 ## Where has it gone?
 
-For some time in the last 25 years undo had become a standard. It came up in the early 70-ies and became more and more standard. The multilevel undo emerged in the 80ies. 
+For some time in the last 50 years undo had become a standard. It came up in the early 70-ies and became increasingly important. The multilevel undo emerged in the 80ies.
 
-But then it got lost again. I can only speculate why it happened. In my professional career I had a number of conversations that may give some pointers. Discussions were about data base applications that write everything directly into the base. Every action had been logged with a time stamp and could litterally not be undone. But - of course - there is no reason why an undo could not have helped to remove a wrong data entry from the data base so that the user can correct it. Also mobile apps became a standard including the (overused) mobile first paradigm. And there is hardly enough screen space for the tasks themselves. Where could you possibly put the undo?
+But then it got lost again. I do not seem to be the only one who noticed it. A "distant colleague" wrote in 2007: "Undo functionality seems to be in increasingly short supply on the more recent raft of web 2.0. websites, especially on sites that make heavy use of AJAX".
+
+I can only speculate why it happened. In my professional career I had a number of conversations that may give some pointers. Discussions were about data base applications that write everything directly into the base. Every action had been logged with a time stamp and could litterally not be undone. But - of course - there is no reason why an undo could not have helped to remove a wrong data entry from the data base so that the user can correct it. Also mobile apps became a standard including the (overused) mobile first paradigm. And there is hardly enough screen space for the tasks themselves. Where could you possibly put the undo?
 
 I suspect that many UX designers except myself still advocated undo but somehow it did not survive the implementation phase.
 
 
-## Overview
+## How to use it
+
+I use it for actions that are directly elicited on a user's action. Commands that are easy to trigger but it is for users  difficult to recover from their effects.
+
+I do not use it
+* ... for actions caused by the commit of a modal windows (dialog or light box).
+* ... for actions that do not have lasting consequences, like applying a filter to a table. 
+
+But that is only part of it. You need a recovery philosophy, in general and that includes a concept which actions offer undo and which do not. And please note: it does not need to be clear to you. And must be clear to your users. It is perfectly okay if your developers need to take a look at the coding guidelines every time they implement a command. It is not okay if your users need to look it up.
+
+
+## Implementation Overview
 
 ![Basic layout of the implemented solution](documentation/img/ClassVisu.svg)
 
@@ -46,7 +59,7 @@ The implementation is based on the [Command pattern (see Wikipedia)](https://en.
 
 ## Sources
 
-* ISO (2020). ISO 9241-110:2020 Ergonomics of human-system interaction — Part 110: Interaction principles.
+* ISO (2020). [ISO 9241-110:2020 Ergonomics of human-system interaction — Part 110: Interaction principles](http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=52075). Accessed 2021-07-25.
 * Laubheimer, Page (2015a). "[Preventing User Errors: Avoiding Conscious Mistakes](https://www.nngroup.com/articles/user-mistakes/)". Accessed 2021-07-25.
-* Laubheimer, Page (2015b). "[Preventing User Errors: Avoiding Unconscious Slips](https://www.nngroup.com/articles/slips/)".  Accessed 2021-07-25.
-
+* Laubheimer, Page (2015b). "[Preventing User Errors: Avoiding Unconscious Slips](https://www.nngroup.com/articles/slips/)". Accessed 2021-07-25.
+* Boag, Paul  (2007). [The importance of Undo](https://boagworld.com/usability/the-importance-of-undo/). Accessed 2021-07-25.
