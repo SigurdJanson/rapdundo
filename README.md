@@ -2,9 +2,9 @@
 
 ## Overview
 
-![Basic layout of the implemented pattern](documentation/img/ClassVisu.svg)
+![Basic layout of the implemented solution](documentation/img/ClassVisu.svg)
 
-The classes and objects participating here include:
+The implementation is based on the [Command pattern (see Wikipedia)](https://en.wikipedia.org/w/index.php?title=Command_pattern&oldid=1025768927). The classes and objects participating here include:
 
 * The invoker asks the command to carry out the request. These are menu items, buttons, ... They can be based on [`ICommandSource`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.input.icommandsource).
 * The receiver is the object that performs the operations that are needed to carry out the command.
