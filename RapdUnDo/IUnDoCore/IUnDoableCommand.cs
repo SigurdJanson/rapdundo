@@ -13,6 +13,15 @@ namespace RapdUnDo.IUndoCore
     public interface IUndoableCommand : ICommand
     {
         /// <summary>
+        /// Callback mechanism to inform command handlers that the command has been executed.
+        /// </summary>
+        public event EventHandler<object?> Executed;
+        /// <summary>
+        /// Callback mechanism to inform command handlers that the command has been revoked.
+        /// </summary>
+        public event Action Revoked;
+
+        /// <summary>
         /// Defines the method to be called when the <em>undo</em> command is invoked.
         /// </summary>
         /// <param name="parameter">Data used by the command. 

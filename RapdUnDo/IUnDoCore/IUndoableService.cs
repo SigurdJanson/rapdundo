@@ -17,6 +17,6 @@ namespace RapdUnDo.IUndoCore
 
         public void RegisterList(IEnumerable<IUndoableCommand> commands);
 
-        public void OnExecuted(IUndoableCommand command);
+        public void OnExecuted(IUndoableCommand command, object? CommandParameter);
     }
 }

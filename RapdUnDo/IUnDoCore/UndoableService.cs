@@ -21,6 +21,15 @@ namespace RapdUnDo.IUndoCore
             GracePeriod = gracePeriod;
         }
 
+        public void OnExecuted(IUndoableCommand command, object? commandParameter)
+        {
+            if (command?.CanRevoke(null) ?? false)
+            {
+                Show(command, commandParameter);
+            }
+        }
+
+
         void IDisposable.Dispose()
         {
             throw new NotImplementedException();
@@ -31,6 +40,7 @@ namespace RapdUnDo.IUndoCore
         public void Register(IUndoableCommand command)
         {
             Commands.Add(command);
+            command.Executed += OnExecuted;
             throw new NotImplementedException(); // register to fire event
         }
 
@@ -41,15 +51,16 @@ namespace RapdUnDo.IUndoCore
         }
 
 
-        protected void Show()
+        protected void Show(IUndoableCommand command, object? commandParameter)
         {
-            SnackbarService.Add("Ooops. Something really bad happened!", Severity.Normal, config =>
+            //TODO: l10n
+            SnackbarService.Add($"{command.CommandName}: {command.ExecutionMessage}", Severity.Normal, config =>
             {
-                config.Action = "Help";
+                config.Action = "Undo"; //TODO: l10n
                 config.ActionColor = Color.Primary;
                 config.Onclick = snackbar =>
                 {
-                    Help();
+                    command.Revoke(commandParameter);
                     return Task.CompletedTask;
                 };
             });

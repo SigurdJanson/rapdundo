@@ -60,6 +60,15 @@ namespace RapdUnDo.IUndoCore
             NewValue = _NewValue;
         }
 
+        /// <inheritdoc/>
+        public event Action Executed;
+        /// <inheritdoc/>
+        public event Action Revoked;
+
+        private void NotifyExecution() => Executed?.Invoke();
+        private void NotifyRevocation() => Revoked?.Invoke();
+
+
 #nullable enable
         /// <inheritdoc/>
         public void Execute(object? parameter = null)
@@ -67,6 +76,7 @@ namespace RapdUnDo.IUndoCore
             Property = NewValue;
             if (ExecutionTimes == 0) CanRevertChanged?.Invoke(this, EventArgs.Empty);
             ExecutionTimes++;
+            NotifyExecution();
         }
 
         /// <inheritdoc/>
@@ -83,6 +93,7 @@ namespace RapdUnDo.IUndoCore
 
             Property = OldValue;
             ExecutionTimes--;
+            NotifyRevocation();
         }
 
         /// <inheritdoc/>
