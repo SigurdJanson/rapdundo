@@ -3,6 +3,7 @@ using System;
 
 namespace RapdUnDo.IUndoCore
 {
+
     /// <summary>
     /// Generic undoable command class that allows setting properties and undo this.
     /// </summary>
@@ -53,21 +54,23 @@ namespace RapdUnDo.IUndoCore
             NewValue = _NewValue;
         }
 
+#nullable enable
         /// <inheritdoc/>
-        public void Execute()
+        public void Execute(object? parameter = null)
         {
             Property = NewValue;
+            if (ExecutionTimes == 0) CanRevertChanged?.Invoke(this, EventArgs.Empty);
             ExecutionTimes++;
         }
 
         /// <inheritdoc/>
-        public bool CanExecute
-        {
-            get => true;
-        }
+        public bool CanExecute(object? parameter = null) => true;
 
         /// <inheritdoc/>
-        public void Revert()
+        public event EventHandler? CanExecuteChanged;
+
+        /// <inheritdoc/>
+        public void Revert(object? parameter = null)
         {
             if (ExecutionTimes <= 0) 
                 throw new Exception("Command cannot be executed");
@@ -77,27 +80,29 @@ namespace RapdUnDo.IUndoCore
         }
 
         /// <inheritdoc/>
-        public bool CanRevert
-        {
-            get => ExecutionTimes > 0;
-        }
+        public bool CanRevert(object? parameter = null) => ExecutionTimes > 0;
+
+        /// <inheritdoc/>
+        public event EventHandler? CanRevertChanged;
+#nullable restore
 
         /// <inheritdoc/>
         public RenderFragment DisplayCommand() 
         {
-            RenderFragment ToDisplay = b => // b is a RenderTreeBuilder
+            return b => // b is a RenderTreeBuilder
             {
                 int i = 0;
                 b.OpenElement(i++, "div");
-                    b.OpenElement(i++, "p");
-                        b.AddContent(i++, $"Old value: {OldValue}");
-                    b.CloseElement();
-                    b.OpenElement(i++, "p");
-                        b.AddContent(i++, $"New value: {NewValue}");
-                    b.CloseElement();
+                b.OpenElement(i++, "p");
+                b.AddContent(i++, $"Old value: {OldValue}");
                 b.CloseElement();
-            };
-            return ToDisplay; 
+                b.OpenElement(i++, "p");
+                b.AddContent(i++, $"New value: {NewValue}");
+                b.CloseElement();
+                b.CloseElement();
+            }; 
         }
     }
+
+
 }
