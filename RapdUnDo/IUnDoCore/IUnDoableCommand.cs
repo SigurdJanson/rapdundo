@@ -10,7 +10,7 @@ namespace RapdUnDo.IUndoCore
     /// <summary>
     /// Defines an interface for command that can be undone in Blazor Apps.
     /// </summary>
-    interface IUnDoableCommand : ICommand
+    public interface IUndoableCommand : ICommand
     {
         /// <summary>
         /// Defines the method to be called when the <em>undo</em> command is invoked.
@@ -34,6 +34,18 @@ namespace RapdUnDo.IUndoCore
         /// <remarks>Normally, a command source calls <see cref="CanRevoke">CanRevert</see> on the command when this event occurs.</remarks>
         public event EventHandler? CanRevertChanged;
 
+
+
+        /// <summary>
+        /// A self-descriptive string that identifies the command to the user.
+        /// </summary>
+        /// <remarks>Usually identical to the name of the button, menu item, etc. that elicits the commands</remarks>
+        public string CommandName { get; set; }
+
+        /// <summary>
+        /// A self-descriptive message shown to the users after the command has been executed.
+        /// </summary>
+        public string ExecutionMessage { get; set; }
 
         /// <summary>
         /// Return a piece of a Blazor render fragment that can be displayed in a window

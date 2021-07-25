@@ -9,7 +9,7 @@ namespace RapdUnDo.IUndoCore
     /// </summary>
     /// <typeparam name="TO">Type of the object</typeparam>
     /// <typeparam name="TV">Type of the object's property</typeparam>
-    public class PropertySetterUnDoCommand<TO, TV> : IUnDoableCommand where TO : class where TV : IConvertible
+    public class PropertySetterUndoCommand<TO, TV> : IUndoableCommand where TO : class where TV : IConvertible
     {
         public int ExecutionTimes { get; protected set; } = 0;
 
@@ -31,6 +31,12 @@ namespace RapdUnDo.IUndoCore
             set => Ref.GetType().GetProperty(PropertyName).SetValue(Ref, value);
         }
 
+        /// <inheritdoc/>
+        public string CommandName { get; set; } = "Changed Property";
+
+        /// <inheritdoc/>
+        public string ExecutionMessage { get; set; } = "Command has been executed";
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -42,7 +48,7 @@ namespace RapdUnDo.IUndoCore
         /// </param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public PropertySetterUnDoCommand(TO _Object, string _PropertyName, TV _NewValue)
+        public PropertySetterUndoCommand(TO _Object, string _PropertyName, TV _NewValue)
         {
             if (_Object is null) throw new ArgumentNullException(nameof(_Object));
             if (_Object.GetType().GetProperty(_PropertyName) == null)

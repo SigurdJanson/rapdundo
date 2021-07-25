@@ -16,7 +16,7 @@
     }
     public CounterClass InnerCounter = new();
 
-    PropertySetterUnDoCommand<CounterClass, int> CmdCount;
+    PropertySetterUndoCommand<CounterClass, int> CmdCount;
 
     private void IncrementCount()
     {
@@ -45,7 +45,7 @@
         }
     }
 
-    private void UndoIncrement(IUnDoableCommand command)
+    private void UndoIncrement(IUndoableCommand command)
     {
         if (command.CanRevoke(null))
             command.Revoke(null);

@@ -29,7 +29,7 @@ namespace Tests_rapdundo.IUnDoCore
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var propertySetterUnDoCommand = new PropertySetterUnDoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
@@ -47,7 +47,7 @@ namespace Tests_rapdundo.IUnDoCore
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var propertySetterUnDoCommand = new PropertySetterUnDoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
@@ -72,7 +72,7 @@ namespace Tests_rapdundo.IUnDoCore
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var propertySetterUnDoCommand = new PropertySetterUnDoCommand<GuineaPig, string>(TestObject, "ProtectedName", NewName);
+                var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, "ProtectedName", NewName);
             });
         }
 
@@ -86,7 +86,7 @@ namespace Tests_rapdundo.IUnDoCore
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var propertySetterUnDoCommand = new PropertySetterUnDoCommand<GuineaPig, string>(TestObject, "PrivateName", NewName);
+                var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, "PrivateName", NewName);
             });
         }
 
@@ -100,7 +100,7 @@ namespace Tests_rapdundo.IUnDoCore
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var propertySetterUnDoCommand = new PropertySetterUnDoCommand<GuineaPig, string>(TestObject, "Unknown Property", NewName);
+                var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, "Unknown Property", NewName);
             });
         }
 
@@ -113,7 +113,7 @@ namespace Tests_rapdundo.IUnDoCore
             // Act
             // Assert
             Assert.Throws<ArgumentNullException>(() => {
-                var propertySetterUnDoCommand = new PropertySetterUnDoCommand<GuineaPig, string>(null, nameof(GuineaPig.Name), NewName);
+                var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(null, nameof(GuineaPig.Name), NewName);
             });
         }
 
