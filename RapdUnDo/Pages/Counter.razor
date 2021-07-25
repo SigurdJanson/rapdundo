@@ -14,25 +14,44 @@
     {
         public int currentCount { get; set; }  = 0;
     }
-
     public CounterClass InnerCounter = new();
-    //public int currentCount = 0;
+
+    PropertySetterUnDoCommand<CounterClass, int> CmdCount;
 
     private void IncrementCount()
     {
-        //currentCount+=10;
-
         try
         {
-            PropertySetterUnDoCommand<CounterClass, int> Cmd = new(InnerCounter, nameof(InnerCounter.currentCount), InnerCounter.currentCount + 1);
-            Cmd.Execute();
+            CmdCount = new(InnerCounter, nameof(InnerCounter.currentCount), InnerCounter.currentCount + 1);
+            CmdCount.Execute();
         }
         catch (Exception e)
         {
             Snackbar.Add(e.Message);
         }
-
-        //Task.Delay(2000);
-        //Cmd.Revert();
+        finally
+        {
+            if (CmdCount?.CanRevert ?? false)
+                Snackbar.Add("It is done.", Severity.Normal, config =>
+                {
+                    config.Action = "Undo";
+                    config.ActionColor = Color.Primary;
+                    config.Onclick = snackbar =>
+                    {
+                        UndoIncrement(CmdCount);
+                        return Task.CompletedTask;
+                    };
+                });
+        }
     }
+
+    private void UndoIncrement(IUnDoableCommand command)
+    {
+        if (command.CanRevert)
+            command.Revert();
+        Snackbar.Add("Counter has been decremented again");
+        StateHasChanged();
+    }
+
 }
+
