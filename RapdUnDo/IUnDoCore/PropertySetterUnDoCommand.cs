@@ -43,7 +43,7 @@ namespace RapdUnDo.IUndoCore
         {
             if (_Object is null) throw new ArgumentNullException(nameof(_Object));
             if (_Object.GetType().GetProperty(_PropertyName) == null)
-                throw new ArgumentException($"Property '{_PropertyName}' does not exist", nameof(_PropertyName));
+                throw new ArgumentException($"Property '{_PropertyName}' does not exist in class {_Object.GetType()}", nameof(_PropertyName));
 
             PropertyName = _PropertyName;
             this.Ref = _Object; // keep the reference

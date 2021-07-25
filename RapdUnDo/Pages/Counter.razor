@@ -1,16 +1,38 @@
 ﻿@page "/counter"
 
-<h1>Counter</h1>
+@using RapdUnDo.IUndoCore
+@inject ISnackbar Snackbar
 
-<p>Current count: @currentCount</p>
+<MudText Typo="Typo.h5">Counter</MudText>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<MudText>Current count: @InnerCounter.currentCount</MudText>
+
+<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" OnClick="IncrementCount">Click me</MudButton>
 
 @code {
-    private int currentCount = 0;
+    public class CounterClass
+    {
+        public int currentCount { get; set; }  = 0;
+    }
+
+    public CounterClass InnerCounter = new();
+    //public int currentCount = 0;
 
     private void IncrementCount()
     {
-        currentCount++;
+        //currentCount+=10;
+
+        try
+        {
+            PropertySetterUnDoCommand<CounterClass, int> Cmd = new(InnerCounter, nameof(InnerCounter.currentCount), InnerCounter.currentCount + 1);
+            Cmd.Execute();
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add(e.Message);
+        }
+
+        //Task.Delay(2000);
+        //Cmd.Revert();
     }
 }
