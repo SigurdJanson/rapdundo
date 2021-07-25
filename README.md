@@ -2,7 +2,7 @@
 
 ## Overview
 
-![Basic layout of the implemented pattern]("./documentation/img/ClassVisu.svg")
+![Basic layout of the implemented pattern]("documentation/img/ClassVisu.svg")
 
 The classes and objects participating here include:
 
