@@ -10,6 +10,8 @@ namespace RapdUnDo.IUndoCore
     /// <typeparam name="TV">Type of the object's property</typeparam>
     public class PropertySetterUnDoCommand<TO, TV> : IUnDoableCommand where TO : class where TV : IConvertible
     {
+        public int ExecutionTimes { get; protected set; } = 0;
+
         /// <summary>Value before executing the command</summary>
         public TV OldValue { get; protected set; }
         /// <summary>Value AFTER executing the command</summary>
@@ -55,12 +57,29 @@ namespace RapdUnDo.IUndoCore
         public void Execute()
         {
             Property = NewValue;
+            ExecutionTimes++;
+        }
+
+        /// <inheritdoc/>
+        public bool CanExecute
+        {
+            get => true;
         }
 
         /// <inheritdoc/>
         public void Revert()
         {
+            if (ExecutionTimes <= 0) 
+                throw new Exception("Command cannot be executed");
+
             Property = OldValue;
+            ExecutionTimes--;
+        }
+
+        /// <inheritdoc/>
+        public bool CanRevert
+        {
+            get => ExecutionTimes > 0;
         }
 
         /// <inheritdoc/>

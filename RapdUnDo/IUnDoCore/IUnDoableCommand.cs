@@ -13,10 +13,14 @@ namespace RapdUnDo.IUndoCore
         /// </summary>
         public void Execute();
 
+        public bool CanExecute { get; }
+
         /// <summary>
         /// Undo the command after it was executed.
         /// </summary>
         public void Revert();
+
+        public bool CanRevert { get; }
 
         /// <summary>
         /// Return a piece of a Blazor render fragment that can be displayed in a window
