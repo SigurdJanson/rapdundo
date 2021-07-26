@@ -15,11 +15,11 @@ namespace RapdUnDo.IUndoCore
         /// <summary>
         /// Callback mechanism to inform command handlers that the command has been executed.
         /// </summary>
-        public event EventHandler<object?> Executed;
+        public event EventHandler<CmdExecEventArgs> Executed;
         /// <summary>
         /// Callback mechanism to inform command handlers that the command has been revoked.
         /// </summary>
-        public event Action Revoked;
+        public event EventHandler<CmdExecEventArgs> Revoked;
 
         /// <summary>
         /// Defines the method to be called when the <em>undo</em> command is invoked.
@@ -41,7 +41,7 @@ namespace RapdUnDo.IUndoCore
         /// Occurs when changes occur that affect whether or not the command should revert.
         /// </summary>
         /// <remarks>Normally, a command source calls <see cref="CanRevoke">CanRevert</see> on the command when this event occurs.</remarks>
-        public event EventHandler? CanRevertChanged;
+        public event EventHandler? CanRevokeChanged;
 
 
 
