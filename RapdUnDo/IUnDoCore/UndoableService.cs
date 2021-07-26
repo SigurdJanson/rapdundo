@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MudBlazor;
 
@@ -9,41 +8,59 @@ namespace RapdUnDo.IUndoCore
 {
     public class UndoableService : IUndoableService
     {
-        protected ISnackbar SnackbarService { get; set; }
+        /// <summary>
+        /// The snackbar service needed to display the undo feature to the users.
+        /// </summary>
+        protected ISnackbar SnackbarService { get; set; } // injection
 
+        /// <summary>
+        /// The list of commands managed by this service.
+        /// </summary>
         protected HashSet<IUndoableCommand> Commands { get; set; }
 
+
+        /// <inheritdoc/>
         public int GracePeriod { get; set; }
 
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="snackbar">Injected ISnackbar service</param>
+        /// <param name="gracePeriod">Sets <see cref="GracePeriod"/></param> //<include path='[@name="GracePeriod"]' />
         public UndoableService(ISnackbar snackbar, int gracePeriod = 5000)
         {
             SnackbarService = snackbar;
             GracePeriod = gracePeriod;
         }
 
-        public void OnExecuted(IUndoableCommand command, object? commandParameter)
-        {
-            if (command?.CanRevoke(null) ?? false)
-            {
-                Show(command, commandParameter);
-            }
-        }
 
 
+        /// <inheritdoc/>
+        /// <remarks>Dispose method [...] should be callable multiple times without throwing an exception.</remarks>
         void IDisposable.Dispose()
         {
-            throw new NotImplementedException();
+            foreach (var c in Commands)
+            {
+                c.Executed -= OnExecuted;
+                //c.Revoked -= OnRevoked; // currently not needed
+            }
             GC.SuppressFinalize(this);
         }
 
 
+
+        /// <inheritdoc/>
         public void Register(IUndoableCommand command)
         {
             Commands.Add(command);
             command.Executed += OnExecuted;
+            //command.Revoked += OnRevoked; // currently not needed
             throw new NotImplementedException(); // register to fire event
         }
 
+        
+        /// <inheritdoc/>
         public void RegisterList(IEnumerable<IUndoableCommand> commands)
         {
             foreach (var c in commands)
@@ -51,6 +68,29 @@ namespace RapdUnDo.IUndoCore
         }
 
 
+
+        /// <inheritdoc/>
+        public void OnExecuted(object command, CmdExecEventArgs eventArgs)
+        {
+            if ((command as IUndoableCommand)?.CanRevoke(eventArgs.CommandParameter) ?? false)
+            {
+                Show(command as IUndoableCommand, eventArgs.CommandParameter);
+            }
+        }
+
+
+        /// <inheritdoc/>
+        public void OnRevoked(object command, CmdExecEventArgs eventArgs)
+        {
+            if ((command as IUndoableCommand)?.CanRevoke(eventArgs.CommandParameter) ?? false)
+            {
+                Show(command as IUndoableCommand, eventArgs.CommandParameter);
+            }
+        }
+
+
+
+#nullable enable
         protected void Show(IUndoableCommand command, object? commandParameter)
         {
             //TODO: l10n
@@ -65,5 +105,6 @@ namespace RapdUnDo.IUndoCore
                 };
             });
         }
+#nullable restore
     }
 }
