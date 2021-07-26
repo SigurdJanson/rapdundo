@@ -9,7 +9,7 @@ namespace RapdUnDo.IUndoCore
     /// </summary>
     /// <typeparam name="TO">Type of the object</typeparam>
     /// <typeparam name="TV">Type of the object's property</typeparam>
-    public class PropertySetterUndoCommand<TO, TV> : IUndoableCommand where TO : class where TV : IConvertible
+    public class PropertySetterUndoCommand<TO, TV> : UndoableCommandBase where TO : class where TV : IConvertible
     {
         public int ExecutionTimes { get; protected set; } = 0;
 
@@ -31,11 +31,6 @@ namespace RapdUnDo.IUndoCore
             set => Ref.GetType().GetProperty(PropertyName).SetValue(Ref, value);
         }
 
-        /// <inheritdoc/>
-        public string CommandName { get; set; } = "Changed Property";
-
-        /// <inheritdoc/>
-        public string ExecutionMessage { get; set; } = "Command has been executed";
 
         /// <summary>
         /// Constructor
@@ -60,46 +55,24 @@ namespace RapdUnDo.IUndoCore
             NewValue = _NewValue;
         }
 
-        /// <inheritdoc/>
-        public event EventHandler<CmdExecEventArgs> Executed;
-        /// <inheritdoc/>
-        public event EventHandler<CmdExecEventArgs> Revoked;
-
-#nullable enable
-        private void NotifyExecution(object? parameter) => 
-            Executed?.Invoke(this, new CmdExecEventArgs() 
-            { 
-                 CommandName = this.CommandName, Message = this.ExecutionMessage, CommandParameter = parameter
-            });
-
-        private void NotifyRevocation(object? parameter) => 
-            Revoked?.Invoke(this, new CmdExecEventArgs()
-            {
-                CommandName = this.CommandName,
-                Message = this.ExecutionMessage,
-                CommandParameter = parameter
-            });
-#nullable restore
 
 
 #nullable enable
         /// <inheritdoc/>
-        public void Execute(object? parameter = null)
+        public override void Execute(object? parameter = null)
         {
             Property = NewValue;
-            if (ExecutionTimes == 0) CanRevokeChanged?.Invoke(this, EventArgs.Empty);
+            if (ExecutionTimes == 0) NotifyOnCanRevokeChanged(this, new CmdExecEventArgs());
             ExecutionTimes++;
             NotifyExecution(parameter);
         }
 
         /// <inheritdoc/>
-        public bool CanExecute(object? parameter = null) => true;
+        public override bool CanExecute(object? parameter = null) => true;
+
 
         /// <inheritdoc/>
-        public event EventHandler? CanExecuteChanged;
-
-        /// <inheritdoc/>
-        public void Revoke(object? parameter = null)
+        public override void Revoke(object? parameter = null)
         {
             if (ExecutionTimes <= 0) 
                 throw new Exception("Command cannot be executed");
@@ -110,15 +83,13 @@ namespace RapdUnDo.IUndoCore
         }
 
         /// <inheritdoc/>
-        public bool CanRevoke(object? parameter = null) => ExecutionTimes > 0;
+        public override bool CanRevoke(object? parameter = null) => ExecutionTimes > 0;
 
-        /// <inheritdoc/>
-        public event EventHandler? CanRevokeChanged;
 #nullable restore
 
 
         /// <inheritdoc/>
-        public RenderFragment DisplayCommand() 
+        public override RenderFragment DisplayCommand() 
         {
             return b => // b is a RenderTreeBuilder
             {
