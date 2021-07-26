@@ -50,9 +50,9 @@ namespace RapdUnDo.IUndoCore
         /// <summary>
         /// Invoke the <c>CanExecuteChanged</c> event.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void NotifyOnCanExecuteChanged(object sender, CmdExecEventArgs e) => 
+        /// <param name="sender">The command</param>
+        /// <param name="e">The command's data</param>
+        protected void NotifyOnCanExecuteChanged(object sender, CmdExecEventArgs e) => 
             CanExecuteChanged?.Invoke(sender, e);
 
         /// <inheritdoc/>
@@ -70,10 +70,10 @@ namespace RapdUnDo.IUndoCore
         /// <summary>
         /// Invoke the <c>CanRevokeChanged</c> event.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void NotifyOnCanRevokeChanged(object sender, CmdExecEventArgs e) =>
-            CanExecuteChanged?.Invoke(sender, e);
+        /// <param name="sender">The command</param>
+        /// <param name="e">The command's data</param>
+        protected void NotifyOnCanRevokeChanged(object sender, CmdExecEventArgs e) =>
+            CanRevokeChanged?.Invoke(sender, e);
 #nullable restore
 
         abstract public RenderFragment DisplayCommand();
