@@ -61,12 +61,25 @@ namespace RapdUnDo.IUndoCore
         }
 
         /// <inheritdoc/>
-        public event Action Executed;
+        public event EventHandler<CmdExecEventArgs> Executed;
         /// <inheritdoc/>
-        public event Action Revoked;
+        public event EventHandler<CmdExecEventArgs> Revoked;
 
-        private void NotifyExecution() => Executed?.Invoke();
-        private void NotifyRevocation() => Revoked?.Invoke();
+#nullable enable
+        private void NotifyExecution(object? parameter) => 
+            Executed?.Invoke(this, new CmdExecEventArgs() 
+            { 
+                 CommandName = this.CommandName, Message = this.ExecutionMessage, CommandParameter = parameter
+            });
+
+        private void NotifyRevocation(object? parameter) => 
+            Revoked?.Invoke(this, new CmdExecEventArgs()
+            {
+                CommandName = this.CommandName,
+                Message = this.ExecutionMessage,
+                CommandParameter = parameter
+            });
+#nullable restore
 
 
 #nullable enable
@@ -74,9 +87,9 @@ namespace RapdUnDo.IUndoCore
         public void Execute(object? parameter = null)
         {
             Property = NewValue;
-            if (ExecutionTimes == 0) CanRevertChanged?.Invoke(this, EventArgs.Empty);
+            if (ExecutionTimes == 0) CanRevokeChanged?.Invoke(this, EventArgs.Empty);
             ExecutionTimes++;
-            NotifyExecution();
+            NotifyExecution(parameter);
         }
 
         /// <inheritdoc/>
@@ -93,15 +106,16 @@ namespace RapdUnDo.IUndoCore
 
             Property = OldValue;
             ExecutionTimes--;
-            NotifyRevocation();
+            NotifyRevocation(parameter);
         }
 
         /// <inheritdoc/>
         public bool CanRevoke(object? parameter = null) => ExecutionTimes > 0;
 
         /// <inheritdoc/>
-        public event EventHandler? CanRevertChanged;
+        public event EventHandler? CanRevokeChanged;
 #nullable restore
+
 
         /// <inheritdoc/>
         public RenderFragment DisplayCommand() 
