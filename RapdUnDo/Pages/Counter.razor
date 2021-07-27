@@ -1,56 +1,28 @@
 ﻿@page "/counter"
 
 @using RapdUnDo.IUndoCore
-@inject ISnackbar Snackbar
+@inject IUndoableService Undo
 
 <MudText Typo="Typo.h5">Counter</MudText>
 
-<MudText>Current count: @InnerCounter.currentCount</MudText>
+<MudText>Current count: @currentCount</MudText>
 
 <MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" OnClick="IncrementCount">Click me</MudButton>
 
 @code {
-    public class CounterClass
-    {
-        public int currentCount { get; set; }  = 0;
-    }
-    public CounterClass InnerCounter = new();
+    public int currentCount { get; set; } = 0;
 
-    PropertySetterUndoCommand<CounterClass, int> CmdCount;
+    public PropertySetterUndoCommand<Counter, int> CmdCount;
+
+    protected override void OnInitialized()
+    {
+        CmdCount = new(this, nameof(currentCount), currentCount + 1);
+        Undo.Register(CmdCount); // new PropertySetterUndoCommand<Counter, int>(this, nameof(currentCount), currentCount + 1)
+    }
 
     private void IncrementCount()
     {
-        try
-        {
-            CmdCount = new(InnerCounter, nameof(InnerCounter.currentCount), InnerCounter.currentCount + 1);
-            CmdCount.Execute();
-        }
-        catch (Exception e)
-        {
-            Snackbar.Add(e.Message);
-        }
-        finally
-        {
-            if (CmdCount?.CanRevoke() ?? false)
-                Snackbar.Add("It is done.", Severity.Normal, config =>
-                {
-                    config.Action = "Undo";
-                    config.ActionColor = Color.Primary;
-                    config.Onclick = snackbar =>
-                    {
-                        UndoIncrement(CmdCount);
-                        return Task.CompletedTask;
-                    };
-                });
-        }
-    }
-
-    private void UndoIncrement(IUndoableCommand command)
-    {
-        if (command.CanRevoke(null))
-            command.Revoke(null);
-        Snackbar.Add("Counter has been decremented again");
-        StateHasChanged();
+        CmdCount.Execute();
     }
 
 }
