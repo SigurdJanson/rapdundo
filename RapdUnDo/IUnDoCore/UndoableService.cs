@@ -16,7 +16,7 @@ namespace RapdUnDo.IUndoCore
         /// <summary>
         /// The list of commands managed by this service.
         /// </summary>
-        protected HashSet<IUndoableCommand> Commands { get; set; }
+        protected HashSet<IUndoableCommand> Commands { get; set; } = new();
 
 
         /// <inheritdoc/>
@@ -55,8 +55,6 @@ namespace RapdUnDo.IUndoCore
         {
             Commands.Add(command);
             command.Executed += OnExecuted;
-            //command.Revoked += OnRevoked; // currently not needed
-            throw new NotImplementedException(); // register to fire event
         }
 
         
