@@ -74,12 +74,12 @@ namespace RapdUnDo.IUndoCore
         /// <inheritdoc/>
         public override void Revoke(object? parameter = null)
         {
-            if (ExecutionTimes <= 0) 
-                throw new Exception("Command cannot be executed");
-
-            Property = OldValue;
-            ExecutionTimes--;
-            NotifyRevocation(parameter);
+            if (CanRevoke())
+            {
+                Property = OldValue;
+                ExecutionTimes--;
+                NotifyRevocation(parameter);
+            }
         }
 
         /// <inheritdoc/>
