@@ -1,15 +1,17 @@
 # rapdundo
 
+> ## This is work in progress...
+
+
+
 ## Why is Undo important?
 
-The ISO 9241-110 "Dialog Principles" states 6 criteria for a favourable dialog between user and a device. One of them is *error tolerance*. All effort invested into Undo directly pays into error tolerance.
+The ISO 9241-110 "Dialog Principles" states 6 criteria for a favourable dialog between user and a device. One of them is *error tolerance*. All effort invested into Undo directly pays into error tolerance. There will always be a certain level of trial and error. People learn the App by trying things out. Some user groups need this more than others. But even the best designed App must forgive a human error and help users recover quickly.
 
-One reason could be the requirement of intuitive interfaces. If the interface is intuitive - so the assumption of many people - users clearly understand what they do on every step. But, of course, that reasoning falls short. For one thing there will never be an App that is 100% intuitive for just about everybody. There will always be a certain level of trial and error. People learn the App by trying things out. Some user groups need this more than others. But even the best designed App must forgive a human error. 
-
-We also should not forget that users make different kinds of errors. If users do very well understand the interface and have the right intention things can still go wrong. The psychology of human error distinguishes several types: mistakes, slips, and lapses. Simply put:
+Users make different kinds of errors. That is indeed noteworthy. If users do very well understand the interface and have the right intention things can still go wrong. The psychology of human error distinguishes several types: mistakes, slips, and lapses. Simply put:
 
 * **Mistakes** happen because someone does not know to do the right thing.
-* That means that someone who **slips** knows what to do but they still don't. Examples: press a neighbouring button on a touch interface; 
+* That means that someone who **slips** knows what to do but they still don't. Examples: press a neighbouring button on a touch interface; or you click "save" when what you actually wanted was "save as...".
 * When users forget to do something or lose their place midway through a task that is called a **lapse**. Such things easily happen when they get interrupted during a task.
 
 How does undo help? It helps for each of these types. It helps with mistakes because users can trust your app and they know: it won't be a problem to try that feature, because I can always undo any havoc I might wreak with one simple click. Mistakes can easily be undone and it encourages users to be curious about your app and learn it fast, try out new features as they come out and become an expert. This way undo does not only pay into dialog principle *error tolerance* but also *learnability*. There are other features like previews that can further increase learnibility and help avoid or recover from mistakes.
@@ -24,7 +26,7 @@ For some time in the last 50 years undo had become a standard. It came up in the
 
 But then it got lost again. I do not seem to be the only one who noticed it. A "distant colleague" wrote in 2007: "Undo functionality seems to be in increasingly short supply on the more recent raft of web 2.0. websites, especially on sites that make heavy use of AJAX".
 
-I can only speculate why it happened. In my professional career I had a number of conversations that may give some pointers. Discussions were about data base applications that write everything directly into the base. Every action had been logged with a time stamp and could litterally not be undone. But - of course - there is no reason why an undo could not have helped to remove a wrong data entry from the data base so that the user can correct it. Also mobile apps became a standard including the (overused) mobile first paradigm. And there is hardly enough screen space for the tasks themselves. Where could you possibly put the undo?
+I can only speculate why it happened. In my professional career I had a number of conversations that may give some pointers. Discussions were about data base applications that write everything directly into the base. Every action had been logged with a time stamp and could litterally not be undone. But - of course - there is no reason why an undo could not have helped to remove a wrong data entry from the data base so that the user can correct it. Also mobile apps became a standard including the (overused) mobile first paradigm. And there is hardly enough screen space for the tasks themselves. Where could you possibly put the undo? and, finally, one reason could be the "requirement" of intuitive interfaces. At least I hear that a lot. Product managers want their app to be intuitive. If the interface is intuitive - so the assumption - users clearly understand what they do on every step. But if that is true and people know what to do on every step, is there a need for undo? The previous section made the case: yes, even if there was an overall intuitive interface, we would still need undo. But we would probably would not need it that much.
 
 I suspect that many UX designers except myself still advocated undo but somehow it did not survive the implementation phase.
 
@@ -56,6 +58,81 @@ The implementation is based on the [Command pattern (see Wikipedia)](https://en.
   * `ISnackbar` is the MudBlazor service. With [Snackbars](https://mudblazor.com/components/snackbar) the toolkit has a UI for rapdUndo commands.
 
 
+
+## Add rapdundo to Your App
+
+Add the following 
+```C#
+builder.Services.AddScoped<IUndoableService, UndoableService>();
+```
+
+to either
+
+* `Program.Main` for Blazor **WebAssembly** or
+* `Startup.cs` under `ConfigureServices` for Blazor **Server**.
+
+...TBD...
+
+
+## Use rapdundo on Blazor Pages
+
+For this sample the sample command `PropertySetterUndoCommand<T1, T2>` is used. This command allows you to set any public property of any class. `T1` represents the class, `T2` the type of the property.
+
+Option 1: 
+
+```C#
+@code {
+    public int currentCount { get; set; } = 0; // must be accessible from outside for the command to change it
+
+    public PropertySetterUndoCommand<Counter, int> CmdCount;
+
+    protected override void OnInitialized()
+    {
+        CmdCount = new(this, nameof(currentCount), currentCount + 1);
+        Undo.Register(CmdCount);
+    }
+
+    // Bind this to the `OnClick` event of your button
+    private void IncrementCount()
+    {
+        CmdCount.Execute();
+    }
+}
+```
+
+
+## Write Your Own Commands
+
+
+Derive your command from `UndoableCommandBase`.
+
+```C#
+public class MyCommand : UndoableCommandBase
+{}
+```
+
+
+Provide two methods (`CanExecute` and `CanRevoke`) that allow you to check whether the command can be executed or evoked in the current state.
+
+```C#
+public override bool CanExecute(object? parameter = null) => SomeCondition == true;
+```
+
+
+Finally, provide the methods that execute and revoke the command, respectively. Here is `Èxecute` as example.
+
+```C#
+public override void Execute(object? parameter = null)
+{
+  // Do your thing
+  ...
+  // Notify any listeners that the command was executed
+  NotifyExecution(parameter);
+  // Notify any listeners that CanRevoke() has changed 
+  // ... because now there is an executed command that can be undone
+  NotifyOnCanRevokeChanged(this, new CmdExecEventArgs());
+}
+```
 
 ## Sources
 
