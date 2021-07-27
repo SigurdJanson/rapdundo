@@ -43,7 +43,7 @@ namespace RapdUnDo.IUndoCore
             foreach (var c in Commands)
             {
                 c.Executed -= OnExecuted;
-                //c.Revoked -= OnRevoked; // currently not needed
+                c.Revoked -= OnRevoked;
             }
             GC.SuppressFinalize(this);
         }
@@ -55,9 +55,10 @@ namespace RapdUnDo.IUndoCore
         {
             Commands.Add(command);
             command.Executed += OnExecuted;
+            command.Revoked += OnRevoked;
         }
 
-        
+
         /// <inheritdoc/>
         public void RegisterList(IEnumerable<IUndoableCommand> commands)
         {
@@ -80,10 +81,10 @@ namespace RapdUnDo.IUndoCore
         /// <inheritdoc/>
         public void OnRevoked(object command, CmdExecEventArgs eventArgs)
         {
-            if ((command as IUndoableCommand)?.CanRevoke(eventArgs.CommandParameter) ?? false)
-            {
+            //if ((command as IUndoableCommand)?.CanRevoke(eventArgs.CommandParameter) ?? false)
+            //{
                 Show(command as IUndoableCommand, eventArgs.CommandParameter);
-            }
+            //}
         }
 
 
@@ -94,11 +95,13 @@ namespace RapdUnDo.IUndoCore
             //TODO: l10n
             SnackbarService.Add($"{command.CommandName}: {command.ExecutionMessage}", Severity.Normal, config =>
             {
-                config.Action = "Undo"; //TODO: l10n
+                if ((command as IUndoableCommand)?.CanRevoke(commandParameter) ?? false) 
+                    config.Action = "Undo"; //TODO: l10n
                 config.ActionColor = Color.Primary;
                 config.Onclick = snackbar =>
                 {
                     command.Revoke(commandParameter);
+
                     return Task.CompletedTask;
                 };
             });
