@@ -9,7 +9,7 @@ namespace RapdUnDo.IUndoCore
     /// </summary>
     /// <typeparam name="TO">Type of the object</typeparam>
     /// <typeparam name="TV">Type of the object's property</typeparam>
-    public class PropertySetterUndoCommand<TO, TV> : UndoableCommandBase where TO : class where TV : IConvertible
+    public class PropertySetterFleximand<TO, TV> : FleximandBase where TO : class where TV : IConvertible
     {
         public int ExecutionTimes { get; protected set; } = 0;
 
@@ -43,7 +43,7 @@ namespace RapdUnDo.IUndoCore
         /// </param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public PropertySetterUndoCommand(TO _Object, string _PropertyName, TV _NewValue)
+        public PropertySetterFleximand(TO _Object, string _PropertyName, TV _NewValue)
         {
             if (_Object is null) throw new ArgumentNullException(nameof(_Object));
             if (_Object.GetType().GetProperty(_PropertyName) == null)
@@ -63,7 +63,7 @@ namespace RapdUnDo.IUndoCore
         public override void Execute(object? parameter = null)
         {
             Property = NewValue;
-            if (!CanRevoke()) NotifyOnCanRevokeChanged(this, new CmdExecEventArgs());
+            if (!CanRevoke()) NotifyOnCanRevokeChanged(this, new FmdExecEventArgs());
             ExecutionTimes++;
             NotifyExecution(parameter);
         }
@@ -80,7 +80,7 @@ namespace RapdUnDo.IUndoCore
                 Property = OldValue;
                 ExecutionTimes--;
                 NotifyRevocation(parameter);
-                if (!CanRevoke()) NotifyOnCanRevokeChanged(this, new CmdExecEventArgs());
+                if (!CanRevoke()) NotifyOnCanRevokeChanged(this, new FmdExecEventArgs());
             }
         }
 
@@ -91,7 +91,7 @@ namespace RapdUnDo.IUndoCore
 
 
         /// <inheritdoc/>
-        public override RenderFragment DisplayCommand() 
+        public override RenderFragment Display() 
         {
             return b => // b is a RenderTreeBuilder
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace RapdUnDo.IUndoCore
 {
 #nullable enable
-    public class CmdExecEventArgs : EventArgs
+    public class FmdExecEventArgs : EventArgs
     {
         public string CommandName { get; set; } = "";
 

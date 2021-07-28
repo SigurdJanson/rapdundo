@@ -10,17 +10,17 @@ namespace RapdUnDo.IUndoCore
     /// <summary>
     /// Defines an interface for command that can be undone in Blazor Apps.
     /// </summary>
-    public interface IUndoableCommand : ICommand
+    public interface IFleximand : ICommand
     {
         /// <summary>
         /// Callback mechanism to inform command handlers that the command has been executed.
         /// </summary>
-        public event EventHandler<CmdExecEventArgs>? Executed;
+        public event EventHandler<FmdExecEventArgs>? Executed;
 
         /// <summary>
         /// Callback mechanism to inform command handlers that the command has been revoked.
         /// </summary>
-        public event EventHandler<CmdExecEventArgs>? Revoked;
+        public event EventHandler<FmdExecEventArgs>? Revoked;
 
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace RapdUnDo.IUndoCore
         /// A self-descriptive string that identifies the command to the user.
         /// </summary>
         /// <remarks>Usually identical to the name of the button, menu item, etc. that elicits the commands</remarks>
-        public string CommandName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// A self-descriptive message shown to the users after the command has been executed.
@@ -62,7 +62,7 @@ namespace RapdUnDo.IUndoCore
         /// to explain users what happens for them decide whether they want to undo or not.
         /// </summary>
         /// <returns>A (hopefully) user-friendly display of the command's effects.</returns>
-        public RenderFragment DisplayCommand();
+        public RenderFragment Display();
     }
 
 #nullable restore

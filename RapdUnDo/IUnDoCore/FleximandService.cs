@@ -6,7 +6,7 @@ using MudBlazor;
 
 namespace RapdUnDo.IUndoCore
 {
-    public class UndoableService : IUndoableService
+    public class FleximandService : IFleximandService
     {
         /// <summary>
         /// The snackbar service needed to display the undo feature to the users.
@@ -16,7 +16,7 @@ namespace RapdUnDo.IUndoCore
         /// <summary>
         /// The list of commands managed by this service.
         /// </summary>
-        protected HashSet<IUndoableCommand> Commands { get; set; } = new();
+        protected HashSet<IFleximand> Commands { get; set; } = new();
 
 
         /// <inheritdoc/>
@@ -31,7 +31,7 @@ namespace RapdUnDo.IUndoCore
         /// </summary>
         /// <param name="snackbar">Injected ISnackbar service</param>
         /// <param name="gracePeriod">Sets <see cref="GracePeriod"/></param> //<include path='[@name="GracePeriod"]' />
-        public UndoableService(ISnackbar snackbar, int gracePeriod = 5000)
+        public FleximandService(ISnackbar snackbar, int gracePeriod = 5000)
         {
             SnackbarService = snackbar;
             GracePeriod = gracePeriod;
@@ -54,7 +54,7 @@ namespace RapdUnDo.IUndoCore
 
 
         /// <inheritdoc/>
-        public void Register(IUndoableCommand command)
+        public void Register(IFleximand command)
         {
             Commands.Add(command);
             command.Executed += OnExecuted;
@@ -63,7 +63,7 @@ namespace RapdUnDo.IUndoCore
 
 
         /// <inheritdoc/>
-        public void RegisterList(IEnumerable<IUndoableCommand> commands)
+        public void RegisterList(IEnumerable<IFleximand> commands)
         {
             foreach (var c in commands)
                 Register(c);
@@ -72,30 +72,30 @@ namespace RapdUnDo.IUndoCore
 
 
         /// <inheritdoc/>
-        public void OnExecuted(object command, CmdExecEventArgs eventArgs)
+        public void OnExecuted(object command, FmdExecEventArgs eventArgs)
         {
-            if ((command as IUndoableCommand)?.CanRevoke(eventArgs.CommandParameter) ?? false)
+            if ((command as IFleximand)?.CanRevoke(eventArgs.CommandParameter) ?? false)
             {
-                Show(command as IUndoableCommand, eventArgs.CommandParameter);
+                Show(command as IFleximand, eventArgs.CommandParameter);
             }
         }
 
 
         /// <inheritdoc/>
-        public void OnRevoked(object command, CmdExecEventArgs eventArgs)
+        public void OnRevoked(object command, FmdExecEventArgs eventArgs)
         {
-            Show(command as IUndoableCommand, eventArgs.CommandParameter);
+            Show(command as IFleximand, eventArgs.CommandParameter);
         }
 
 
 
 #nullable enable
-        protected void Show(IUndoableCommand command, object? commandParameter)
+        protected void Show(IFleximand command, object? commandParameter)
         {
             //TODO: l10n
-            SnackbarService.Add($"{command.CommandName}: {command.ExecutionMessage}", Severity.Normal, config =>
+            SnackbarService.Add($"{command.Name}: {command.ExecutionMessage}", Severity.Normal, config =>
             {
-                if ((command as IUndoableCommand)?.CanRevoke(commandParameter) ?? false) 
+                if ((command as IFleximand)?.CanRevoke(commandParameter) ?? false) 
                     config.Action = "Undo"; //TODO: l10n
                 config.ActionColor = Color.Primary;
                 config.Onclick = snackbar =>

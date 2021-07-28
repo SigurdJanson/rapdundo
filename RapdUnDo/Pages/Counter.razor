@@ -1,7 +1,7 @@
 ﻿@page "/counter"
 
 @using RapdUnDo.IUndoCore
-@inject IUndoableService Undo
+@inject IFleximandService Undo
 
 <MudText Typo="Typo.h5">Counter</MudText>
 
@@ -12,7 +12,7 @@
 @code {
     public int currentCount { get; set; } = 0;
 
-    public PropertySetterUndoCommand<Counter, int> CmdCount;
+    public PropertySetterFleximand<Counter, int> CmdCount;
 
     protected override void OnInitialized()
     {

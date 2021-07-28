@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace RapdUnDo.IUndoCore
 {
-    public abstract class UndoableCommandBase : IUndoableCommand
+    public abstract class FleximandBase : IFleximand
     {
         /// <inheritdoc/>
-        public string CommandName { get; set; } = "Changed Property";
+        public string Name { get; set; } = "Changed Property";
 
         /// <inheritdoc/>
         public string ExecutionMessage { get; set; } = "Command has been executed";
@@ -17,17 +17,17 @@ namespace RapdUnDo.IUndoCore
 
 #nullable enable
         protected void NotifyExecution(object? parameter) =>
-            Executed?.Invoke(this, new CmdExecEventArgs()
+            Executed?.Invoke(this, new FmdExecEventArgs()
             {
-                CommandName = this.CommandName,
+                CommandName = this.Name,
                 Message = this.ExecutionMessage,
                 CommandParameter = parameter
             });
 
         protected void NotifyRevocation(object? parameter) =>
-            Revoked?.Invoke(this, new CmdExecEventArgs()
+            Revoked?.Invoke(this, new FmdExecEventArgs()
             {
-                CommandName = this.CommandName,
+                CommandName = this.Name,
                 Message = this.ExecutionMessage,
                 CommandParameter = parameter
             });
@@ -39,7 +39,7 @@ namespace RapdUnDo.IUndoCore
         abstract public void Execute(object? parameter = null);
 
         /// <inheritdoc/>
-        public event EventHandler<CmdExecEventArgs>? Executed;
+        public event EventHandler<FmdExecEventArgs>? Executed;
 
         /// <inheritdoc/>
         abstract public bool CanExecute(object? parameter = null);
@@ -52,14 +52,14 @@ namespace RapdUnDo.IUndoCore
         /// </summary>
         /// <param name="sender">The command</param>
         /// <param name="e">The command's data</param>
-        protected void NotifyOnCanExecuteChanged(object sender, CmdExecEventArgs e) => 
+        protected void NotifyOnCanExecuteChanged(object sender, FmdExecEventArgs e) => 
             CanExecuteChanged?.Invoke(sender, e);
 
         /// <inheritdoc/>
         abstract public void Revoke(object? parameter);
 
         /// <inheritdoc/>
-        public event EventHandler<CmdExecEventArgs>? Revoked;
+        public event EventHandler<FmdExecEventArgs>? Revoked;
 
         /// <inheritdoc/>
         abstract public bool CanRevoke(object? parameter = null);
@@ -72,10 +72,11 @@ namespace RapdUnDo.IUndoCore
         /// </summary>
         /// <param name="sender">The command</param>
         /// <param name="e">The command's data</param>
-        protected void NotifyOnCanRevokeChanged(object sender, CmdExecEventArgs e) =>
+        protected void NotifyOnCanRevokeChanged(object sender, FmdExecEventArgs e) =>
             CanRevokeChanged?.Invoke(sender, e);
 #nullable restore
 
-        abstract public RenderFragment DisplayCommand();
+        /// <inheritdoc/>
+        abstract public RenderFragment Display();
     }
 }

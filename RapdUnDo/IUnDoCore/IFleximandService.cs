@@ -6,7 +6,7 @@ using MudBlazor;
 
 namespace RapdUnDo.IUndoCore
 {
-    public interface IUndoableService : IDisposable
+    public interface IFleximandService : IDisposable
     {
         /// <summary>
         /// The time period (milliseconds) that users get the chance to undo an action.
@@ -18,13 +18,13 @@ namespace RapdUnDo.IUndoCore
         /// callbacks <c>Executed</c> and <c>Revoked</c> to get notified of these events.
         /// </summary>
         /// <param name="command"></param>
-        public void Register(IUndoableCommand command);
+        public void Register(IFleximand command);
 
         /// <summary>
         /// Register a list of commands
         /// </summary>
         /// <param name="commands"></param>
-        public void RegisterList(IEnumerable<IUndoableCommand> commands);
+        public void RegisterList(IEnumerable<IFleximand> commands);
 
 
         public event EventHandler NotifyPageOnCommand;
@@ -33,16 +33,16 @@ namespace RapdUnDo.IUndoCore
         /// <summary>
         /// Get notified by an event handler that a command was executed.
         /// </summary>
-        /// <param name="sender">The command (<see cref="IUndoableCommand"></see>)</param>
+        /// <param name="sender">The command (<see cref="IFleximand"></see>)</param>
         /// <param name="eventArgs">Command data</param>
-        public void OnExecuted(object sender, CmdExecEventArgs eventArgs);
+        public void OnExecuted(object sender, FmdExecEventArgs eventArgs);
 
 
         /// <summary>
         /// Get notified by an event handler that a command was revoked.
         /// </summary>
-        /// <param name="sender">The command (<see cref="IUndoableCommand"></see>)</param>
+        /// <param name="sender">The command (<see cref="IFleximand"></see>)</param>
         /// <param name="eventArgs">Command data</param>
-        public void OnRevoked(object sender, CmdExecEventArgs eventArgs);
+        public void OnRevoked(object sender, FmdExecEventArgs eventArgs);
     }
 }
