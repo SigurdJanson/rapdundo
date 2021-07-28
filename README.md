@@ -1,4 +1,4 @@
-# rapdundo
+# Fleximands
 
 > ## This is work in progress...
 
@@ -48,22 +48,22 @@ But that is only part of it. You need a recovery philosophy, in general and that
 
 The implementation is based on the [Command pattern (see Wikipedia)](https://en.wikipedia.org/w/index.php?title=Command_pattern&oldid=1025768927). The classes and objects participating here include:
 
-* The invoker asks the command to carry out the request. These are menu items, buttons, ... They can be based on [`ICommandSource`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.input.icommandsource).
+* The invoker asks the command to carry out the request. These are menu items, buttons, ... 
 * The receiver is the object that performs the operations that are needed to carry out the command.
-* `IUndoableCommand` declares an interface for executing an operation. It is derived from [`ICommand`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.input.icommand.canexecutechanged).
+* `IFleximand` declares an interface for executing an operation. It is derived from [`ICommand`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.input.icommand).
 * The **(Concrete) Command** links the invoker to the receiver
   * defines a binding between a receiver object and an action
   * implements `Execute()` by invoking the corresponding operation(s) on the receiver
-* `IUndoableService`
-  * `ISnackbar` is the MudBlazor service. With [Snackbars](https://mudblazor.com/components/snackbar) the toolkit has a UI for rapdUndo commands.
+* `IFleximandService`
+  * `ISnackbar` is the MudBlazor service. With [Snackbars](https://mudblazor.com/components/snackbar) the toolkit has a UI for Fleximands.
 
 
 
-## Add rapdundo to Your App
+## Add the Fleximand Service to Your App
 
 Add the following 
 ```C#
-builder.Services.AddScoped<IUndoableService, UndoableService>();
+builder.Services.AddScoped<IFleximandService, FleximandService>();
 ```
 
 to either
@@ -74,14 +74,14 @@ to either
 ...TBD...
 
 
-## Use rapdundo on Blazor Pages
+## Use Fleximands on Blazor Pages
 
-For this sample the sample command `PropertySetterUndoCommand<T1, T2>` is used. This command allows you to set any public property of any class. `T1` represents the class, `T2` the type of the property.
+For this sample the sample command `PropertySetterFleximand<T1, T2>` is used. This command allows you to set any public property of any class. `T1` represents the class, `T2` the type of the property.
 
 Option 1: 
 
 ```C#
-@inject IUndoableService Undo
+@inject IFleximandService Undo
 
 <MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" OnClick="IncrementCount">Click me</MudButton>
 <MudText>Current count: @currentCount</MudText>
@@ -89,19 +89,19 @@ Option 1:
 @code {
     public int currentCount { get; set; } = 0; // must be accessible from outside for the command to change it
 
-    public PropertySetterUndoCommand<Counter, int> CmdCount;
+    public PropertySetterUndoCommand<Counter, int> FmdCount;
 
     protected override void OnInitialized()
     {
-        CmdCount = new(this, nameof(currentCount), currentCount + 1);
-        Undo.Register(CmdCount);
+        FmdCount = new(this, nameof(currentCount), currentCount + 1);
+        Undo.Register(FmdCount);
         Undo.NotifyPageOnCommand += (object o, EventArgs a) => StateHasChanged();
     }
 
     // Bind this to the `OnClick` event of your button
     private void IncrementCount()
     {
-        CmdCount.Execute();
+        FmdCount.Execute();
     }
 }
 ```
@@ -109,21 +109,21 @@ Option 1:
 Option 2: alternatively, I prefer to hand over the command directly to the button:
 
 ```C#
-@inject IUndoableService Undo
+@inject IFleximandService Undo
 
 @* Replaced OnClick with Command *@
-<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" Command=CmdCount>Click me</MudButton>
+<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" Command=FmdCount>Click me</MudButton>
 <MudText>Current count: @currentCount</MudText>
 
 @code {
     public int currentCount { get; set; } = 0;
 
-    public PropertySetterUndoCommand<Counter, int> CmdCount;
+    public PropertySetterUndoCommand<Counter, int> FmdCount;
 
     protected override void OnInitialized()
     {
-        CmdCount = new(this, nameof(currentCount), currentCount + 1);
-        Undo.Register(CmdCount);
+        FmdCount = new(this, nameof(currentCount), currentCount + 1);
+        Undo.Register(FmdCount);
         Undo.NotifyPageOnCommand += (object o, EventArgs a) => StateHasChanged();
     }
 
@@ -133,13 +133,13 @@ Option 2: alternatively, I prefer to hand over the command directly to the butto
 
 
 
-## Write Your Own Commands
+## Write Your Own Fleximands
 
 
-Derive your command from `UndoableCommandBase`.
+Derive your command from `FleximandBase`.
 
 ```C#
-public class MyCommand : UndoableCommandBase
+public class MyFleximand : FleximandBase
 {}
 ```
 
@@ -165,6 +165,7 @@ public override void Execute(object? parameter = null)
   NotifyOnCanRevokeChanged(this, new CmdExecEventArgs());
 }
 ```
+
 
 ## Sources
 
