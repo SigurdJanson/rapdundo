@@ -22,7 +22,7 @@ namespace Tests_rapdundo.IUnDoCore
         }
 
 
-
+        #region Execution / Revokation Tests ================
         [Test]
         public void Execute_PublicStringProperty()
         {
@@ -36,13 +36,17 @@ namespace Tests_rapdundo.IUnDoCore
             propertySetterUnDoCommand.Execute();
 
             // Assert
-            Assert.AreEqual(NewName, TestObject.Name);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(NewName, TestObject.Name);
+                Assert.AreEqual(1, propertySetterUnDoCommand.ExecutionTimes);
+            });
         }
 
 
 
         [Test]
-        public void Revert_PublicStringProperty()
+        public void Revoke_PublicStringProperty()
         {
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
@@ -56,11 +60,107 @@ namespace Tests_rapdundo.IUnDoCore
             propertySetterUnDoCommand.Revoke();
 
             // Assert
-            Assert.AreEqual(DefaultName, TestObject.Name);
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(DefaultName, TestObject.Name);
+                Assert.AreEqual(0, propertySetterUnDoCommand.ExecutionTimes);
+            });
         }
 
 
-        #region Testing Exceptions ================
+
+        [Test]
+        public void CanExecute_PublicStringProperty_True()
+        {
+            const string NewName = "This is the new name of the guinea pig";
+            // Arrange
+            GuineaPig TestObject = new();
+            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+
+            // Act
+            Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
+            propertySetterUnDoCommand.Execute();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(propertySetterUnDoCommand.CanExecute());
+                Assert.AreEqual(1, propertySetterUnDoCommand.ExecutionTimes);
+            });
+        }
+
+
+        [Test]
+        public void CanRevoke_PublicStringProperty_True()
+        {
+            const string NewName = "This is the new name of the guinea pig";
+            // Arrange
+            GuineaPig TestObject = new();
+            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+
+            // Act
+            Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
+            propertySetterUnDoCommand.Execute();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(propertySetterUnDoCommand.CanRevoke());
+                Assert.AreEqual(1, propertySetterUnDoCommand.ExecutionTimes);
+            });
+        }
+
+
+        [Test]
+        public void CanRevoke_PublicStringProperty_False ()
+        {
+            const string NewName = "This is the new name of the guinea pig";
+            // Arrange
+            GuineaPig TestObject = new();
+            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+
+            // Act
+            Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
+            //propertySetterUnDoCommand.Execute(); // no undo unless command was executed
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.IsFalse(propertySetterUnDoCommand.CanRevoke());
+                Assert.AreEqual(0, propertySetterUnDoCommand.ExecutionTimes);
+            });
+        }
+        #endregion
+
+
+
+        #region Can[...]Changed Tests =================
+
+        [Test]
+        public void CanRevokeChanged_PublicStringProperty_Raised()
+        {
+            const string NewName = "This is the new name of the guinea pig";
+            // Arrange
+            bool HasCanRevokeChangedBeenCaught = false;
+            void CatchCanRevoke(object sender, EventArgs e) => HasCanRevokeChangedBeenCaught = true;
+
+            GuineaPig TestObject = new();
+            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            propertySetterUnDoCommand.CanRevokeChanged += CatchCanRevoke;
+
+            // Act
+            Assume.That(propertySetterUnDoCommand.CanRevoke(), Is.EqualTo(false));
+            propertySetterUnDoCommand.Execute();
+
+            // Assert
+            Assert.IsTrue(HasCanRevokeChangedBeenCaught);
+        }
+
+        #endregion
+
+
+
+        #region Testing Constructor Exceptions ================
 
         [Test]
         public void Instantiate_ProtectedProperty_Exception()
@@ -76,6 +176,7 @@ namespace Tests_rapdundo.IUnDoCore
             });
         }
 
+
         [Test]
         public void Instantiate_PrivateProperty_Exception()
         {
@@ -89,6 +190,7 @@ namespace Tests_rapdundo.IUnDoCore
                 var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, "PrivateName", NewName);
             });
         }
+
 
         [Test]
         public void Instantiate_MissingProperty_Exception()

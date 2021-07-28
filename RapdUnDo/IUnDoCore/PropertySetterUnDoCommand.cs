@@ -47,7 +47,8 @@ namespace RapdUnDo.IUndoCore
         {
             if (_Object is null) throw new ArgumentNullException(nameof(_Object));
             if (_Object.GetType().GetProperty(_PropertyName) == null)
-                throw new ArgumentException($"Property '{_PropertyName}' does not exist in class {_Object.GetType()}", nameof(_PropertyName));
+                throw new ArgumentException($"Property '{_PropertyName}' does not exist " +
+                    $"in class {_Object.GetType()}", nameof(_PropertyName));
 
             PropertyName = _PropertyName;
             this.Ref = _Object; // keep the reference
@@ -62,7 +63,7 @@ namespace RapdUnDo.IUndoCore
         public override void Execute(object? parameter = null)
         {
             Property = NewValue;
-            if (ExecutionTimes == 0) NotifyOnCanRevokeChanged(this, new CmdExecEventArgs());
+            if (!CanRevoke()) NotifyOnCanRevokeChanged(this, new CmdExecEventArgs());
             ExecutionTimes++;
             NotifyExecution(parameter);
         }
@@ -79,6 +80,7 @@ namespace RapdUnDo.IUndoCore
                 Property = OldValue;
                 ExecutionTimes--;
                 NotifyRevocation(parameter);
+                if (!CanRevoke()) NotifyOnCanRevokeChanged(this, new CmdExecEventArgs());
             }
         }
 
