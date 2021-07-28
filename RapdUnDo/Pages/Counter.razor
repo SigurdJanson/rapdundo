@@ -7,7 +7,7 @@
 
 <MudText>Current count: @currentCount</MudText>
 
-<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" OnClick="IncrementCount">Click me</MudButton>
+<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" Command=CmdCount>Click me</MudButton>
 
 @code {
     public int currentCount { get; set; } = 0;
@@ -17,18 +17,11 @@
     protected override void OnInitialized()
     {
         CmdCount = new(this, nameof(currentCount), currentCount + 1);
-        Undo.Register(CmdCount); // new PropertySetterUndoCommand<Counter, int>(this, nameof(currentCount), currentCount + 1)
+        Undo.Register(CmdCount);
 
         Undo.NotifyPageOnCommand += (object o, EventArgs a) => StateHasChanged();
 
         base.OnInitialized();
-    }
-
-
-    // Bind this to the `OnClick` event of your button
-    private void IncrementCount()
-    {
-        CmdCount.Execute();
     }
 
 }
