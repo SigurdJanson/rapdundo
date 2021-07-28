@@ -16,7 +16,7 @@ Users make different kinds of errors. That is indeed noteworthy. If users do ver
 
 How does undo help? It helps for each of these types. It helps with mistakes because users can trust your app and they know: it won't be a problem to try that feature, because I can always undo any havoc I might wreak with one simple click. Mistakes can easily be undone and it encourages users to be curious about your app and learn it fast, try out new features as they come out and become an expert. This way undo does not only pay into dialog principle *error tolerance* but also *learnability*. There are other features like previews that can further increase learnibility and help avoid or recover from mistakes.
 
-Of course, it helps with slips. Users have the chance to go back one step and recover quickly. [Other features (see e.g. Laubheimer, 2015b)](https://www.nngroup.com/articles/slips/)) can help, too, but undo is the most universal one.
+Of course, it helps with slips. Users have the chance to go back one step and recover quickly. [Other features (see e.g. Laubheimer, 2015b)](https://www.nngroup.com/articles/slips/)) can help, too, but undo is a very universal one.
 
 
 
@@ -81,6 +81,11 @@ For this sample the sample command `PropertySetterUndoCommand<T1, T2>` is used. 
 Option 1: 
 
 ```C#
+@inject IUndoableService Undo
+
+<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" OnClick="IncrementCount">Click me</MudButton>
+<MudText>Current count: @currentCount</MudText>
+
 @code {
     public int currentCount { get; set; } = 0; // must be accessible from outside for the command to change it
 
@@ -90,6 +95,7 @@ Option 1:
     {
         CmdCount = new(this, nameof(currentCount), currentCount + 1);
         Undo.Register(CmdCount);
+        Undo.NotifyPageOnCommand += (object o, EventArgs a) => StateHasChanged();
     }
 
     // Bind this to the `OnClick` event of your button
@@ -99,6 +105,32 @@ Option 1:
     }
 }
 ```
+
+Option 2: alternatively, I prefer to hand over the command directly to the button:
+
+```C#
+@inject IUndoableService Undo
+
+@* Replaced OnClick with Command *@
+<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" Command=CmdCount>Click me</MudButton>
+<MudText>Current count: @currentCount</MudText>
+
+@code {
+    public int currentCount { get; set; } = 0;
+
+    public PropertySetterUndoCommand<Counter, int> CmdCount;
+
+    protected override void OnInitialized()
+    {
+        CmdCount = new(this, nameof(currentCount), currentCount + 1);
+        Undo.Register(CmdCount);
+        Undo.NotifyPageOnCommand += (object o, EventArgs a) => StateHasChanged();
+    }
+
+    // Removed IncrementCount()
+}
+```
+
 
 
 ## Write Your Own Commands
@@ -119,7 +151,7 @@ public override bool CanExecute(object? parameter = null) => SomeCondition == tr
 ```
 
 
-Finally, provide the methods that execute and revoke the command, respectively. Here is `Èxecute` as example.
+Finally, provide the methods that execute and revoke the command, respectively. Here is `Execute` as example.
 
 ```C#
 public override void Execute(object? parameter = null)
