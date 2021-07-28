@@ -5,7 +5,7 @@ using System;
 namespace Tests_rapdundo.IUnDoCore
 {
     [TestFixture]
-    public class PropertySetterUnDoCommandTests
+    public class PropertySetterFleximandTests
     {
         const string DefaultName = "Default public name";
         const string DefaultProtectedName = "Default protected name";
@@ -29,17 +29,17 @@ namespace Tests_rapdundo.IUnDoCore
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            propertySetterUnDoCommand.Execute();
+            PropertySetterFmd.Execute();
 
             // Assert
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(NewName, TestObject.Name);
-                Assert.AreEqual(1, propertySetterUnDoCommand.ExecutionTimes);
+                Assert.AreEqual(1, PropertySetterFmd.ExecutionTimes);
             });
         }
 
@@ -51,19 +51,19 @@ namespace Tests_rapdundo.IUnDoCore
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            propertySetterUnDoCommand.Execute();
+            PropertySetterFmd.Execute();
             Assume.That(TestObject.Name, Is.EqualTo(NewName));
-            propertySetterUnDoCommand.Revoke();
+            PropertySetterFmd.Revoke();
 
             // Assert
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(DefaultName, TestObject.Name);
-                Assert.AreEqual(0, propertySetterUnDoCommand.ExecutionTimes);
+                Assert.AreEqual(0, PropertySetterFmd.ExecutionTimes);
             });
         }
 
@@ -75,17 +75,17 @@ namespace Tests_rapdundo.IUnDoCore
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            propertySetterUnDoCommand.Execute();
+            PropertySetterFmd.Execute();
 
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.IsTrue(propertySetterUnDoCommand.CanExecute());
-                Assert.AreEqual(1, propertySetterUnDoCommand.ExecutionTimes);
+                Assert.IsTrue(PropertySetterFmd.CanExecute());
+                Assert.AreEqual(1, PropertySetterFmd.ExecutionTimes);
             });
         }
 
@@ -96,17 +96,17 @@ namespace Tests_rapdundo.IUnDoCore
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            propertySetterUnDoCommand.Execute();
+            PropertySetterFmd.Execute();
 
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.IsTrue(propertySetterUnDoCommand.CanRevoke());
-                Assert.AreEqual(1, propertySetterUnDoCommand.ExecutionTimes);
+                Assert.IsTrue(PropertySetterFmd.CanRevoke());
+                Assert.AreEqual(1, PropertySetterFmd.ExecutionTimes);
             });
         }
 
@@ -117,17 +117,17 @@ namespace Tests_rapdundo.IUnDoCore
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            //propertySetterUnDoCommand.Execute(); // no undo unless command was executed
+            //PropertySetterFmd.Execute(); // no undo unless command was executed
 
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.IsFalse(propertySetterUnDoCommand.CanRevoke());
-                Assert.AreEqual(0, propertySetterUnDoCommand.ExecutionTimes);
+                Assert.IsFalse(PropertySetterFmd.CanRevoke());
+                Assert.AreEqual(0, PropertySetterFmd.ExecutionTimes);
             });
         }
         #endregion
@@ -145,12 +145,12 @@ namespace Tests_rapdundo.IUnDoCore
             void CatchCanRevoke(object sender, EventArgs e) => HasCanRevokeChangedBeenCaught = true;
 
             GuineaPig TestObject = new();
-            var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
-            propertySetterUnDoCommand.CanRevokeChanged += CatchCanRevoke;
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            PropertySetterFmd.CanRevokeChanged += CatchCanRevoke;
 
             // Act
-            Assume.That(propertySetterUnDoCommand.CanRevoke(), Is.EqualTo(false));
-            propertySetterUnDoCommand.Execute();
+            Assume.That(PropertySetterFmd.CanRevoke(), Is.EqualTo(false));
+            PropertySetterFmd.Execute();
 
             // Assert
             Assert.IsTrue(HasCanRevokeChangedBeenCaught);
@@ -172,7 +172,7 @@ namespace Tests_rapdundo.IUnDoCore
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, "ProtectedName", NewName);
+                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "ProtectedName", NewName);
             });
         }
 
@@ -187,7 +187,7 @@ namespace Tests_rapdundo.IUnDoCore
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, "PrivateName", NewName);
+                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "PrivateName", NewName);
             });
         }
 
@@ -202,7 +202,7 @@ namespace Tests_rapdundo.IUnDoCore
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(TestObject, "Unknown Property", NewName);
+                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "Unknown Property", NewName);
             });
         }
 
@@ -215,7 +215,7 @@ namespace Tests_rapdundo.IUnDoCore
             // Act
             // Assert
             Assert.Throws<ArgumentNullException>(() => {
-                var propertySetterUnDoCommand = new PropertySetterUndoCommand<GuineaPig, string>(null, nameof(GuineaPig.Name), NewName);
+                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(null, nameof(GuineaPig.Name), NewName);
             });
         }
 
