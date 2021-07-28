@@ -20,6 +20,9 @@ namespace RapdUnDo.IUndoCore
 
 
         /// <inheritdoc/>
+        public event EventHandler NotifyPageOnCommand;
+
+        /// <inheritdoc/>
         public int GracePeriod { get; set; }
 
 
@@ -81,10 +84,7 @@ namespace RapdUnDo.IUndoCore
         /// <inheritdoc/>
         public void OnRevoked(object command, CmdExecEventArgs eventArgs)
         {
-            //if ((command as IUndoableCommand)?.CanRevoke(eventArgs.CommandParameter) ?? false)
-            //{
-                Show(command as IUndoableCommand, eventArgs.CommandParameter);
-            //}
+            Show(command as IUndoableCommand, eventArgs.CommandParameter);
         }
 
 
@@ -105,6 +105,8 @@ namespace RapdUnDo.IUndoCore
                     return Task.CompletedTask;
                 };
             });
+ 
+            NotifyPageOnCommand?.Invoke(this, EventArgs.Empty);
         }
 #nullable restore
     }

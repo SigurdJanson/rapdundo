@@ -26,6 +26,10 @@ namespace RapdUnDo.IUndoCore
         /// <param name="commands"></param>
         public void RegisterList(IEnumerable<IUndoableCommand> commands);
 
+
+        public event EventHandler NotifyPageOnCommand;
+
+
         /// <summary>
         /// Get notified by an event handler that a command was executed.
         /// </summary>
