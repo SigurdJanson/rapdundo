@@ -5,6 +5,7 @@
 @implements IDisposable
 
 @inject IFleximandService Undo
+@inject ISnackbar Snackbar
 
 
 
@@ -12,7 +13,10 @@
 
 <MudText>Current count: @currentCount</MudText>
 
-<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" Command=FmdCount>Click me</MudButton>
+<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" Command=FmdCount>Add 1</MudButton>
+
+<MudButton StartIcon="@Icons.Material.Filled.AddAlert" Variant=Variant.Outlined Color="Color.Primary" OnClick=AddSnackbar>Show snackbar</MudButton>
+
 
 @code {
     public int currentCount { get; set; } = 0;
@@ -32,6 +36,16 @@
     void IDisposable.Dispose()
     {
         Undo.NotifyPageOnCommand -= (object o, EventArgs a) => StateHasChanged();
+    }
+
+
+
+    public void AddSnackbar()
+    {
+        Snackbar.Add("Snackbar will close after navigation.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
     }
 }
 
