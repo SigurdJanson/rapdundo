@@ -99,6 +99,7 @@ namespace Fleximand.Core
                     config.Action = "Undo"; //TODO: l10n
                 config.ActionColor = Color.Primary;
                 config.CloseAfterNavigation = true;
+                config.VisibleStateDuration = GracePeriod;
                 config.Onclick = snackbar =>
                 {
                     command.Revoke(commandParameter);
