@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MudBlazor;
 
 
-namespace RapdUnDo.IUndoCore
+namespace Fleximand.Core
 {
     public class FleximandService : IFleximandService
     {

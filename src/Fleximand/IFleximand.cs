@@ -3,7 +3,7 @@ using System.Windows.Input;
 using Microsoft.AspNetCore.Components;
 
 
-namespace RapdUnDo.IUndoCore
+namespace Fleximand.Core
 {
 #nullable enable
 

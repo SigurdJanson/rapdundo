@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "RapdUnDo": {
+    "Fleximand.Example": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

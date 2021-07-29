@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MudBlazor;
 
-namespace RapdUnDo.IUndoCore
+namespace Fleximand.Core
 {
     public interface IFleximandService : IDisposable
     {

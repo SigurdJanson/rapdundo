@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using RapdUnDo.IUndoCore;
+using Fleximand.Core;
 using System;
 
-namespace Tests_rapdundo.IUnDoCore
+namespace Tests_Fleximand.Core
 {
     [TestFixture]
     public class PropertySetterFleximandTests

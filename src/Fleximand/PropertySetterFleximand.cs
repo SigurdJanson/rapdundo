@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
 
-namespace RapdUnDo.IUndoCore
+namespace Fleximand.Core
 {
 
     /// <summary>

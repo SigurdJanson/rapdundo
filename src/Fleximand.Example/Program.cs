@@ -8,9 +8,10 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using MudBlazor.Services;
-using RapdUnDo.IUndoCore;
+using Fleximand.Core;
+using Fleximand.Example;
 
-namespace RapdUnDo
+namespace Fleximand
 {
     public class Program
     {
