@@ -98,6 +98,7 @@ namespace Fleximand.Core
                 if ((command as IFleximand)?.CanRevoke(commandParameter) ?? false) 
                     config.Action = "Undo"; //TODO: l10n
                 config.ActionColor = Color.Primary;
+                config.CloseAfterNavigation = true;
                 config.Onclick = snackbar =>
                 {
                     command.Revoke(commandParameter);
