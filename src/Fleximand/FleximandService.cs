@@ -92,6 +92,13 @@ namespace Fleximand.Core
 #nullable enable
         protected void Show(IFleximand command, object? commandParameter)
         {
+            int HideTransitionDuration = SnackbarService.Configuration.HideTransitionDuration;
+
+            if ((command as IFleximand)?.CanRevoke(commandParameter) ?? false)
+            {
+                HideTransitionDuration /= 10;
+                GracePeriod += HideTransitionDuration /= 10;
+            }
             //TODO: l10n
             SnackbarService.Add($"{command.Name}: {command.ExecutionMessage}", Severity.Normal, config =>
             {
@@ -100,10 +107,10 @@ namespace Fleximand.Core
                 config.ActionColor = Color.Primary;
                 config.CloseAfterNavigation = true;
                 config.VisibleStateDuration = GracePeriod;
+                config.HideTransitionDuration = HideTransitionDuration;
                 config.Onclick = snackbar =>
                 {
                     command.Revoke(commandParameter);
-
                     return Task.CompletedTask;
                 };
             });
