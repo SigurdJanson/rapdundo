@@ -9,14 +9,34 @@
 
 
 
-<MudText Typo="Typo.h5">Counter</MudText>
+<MudPaper Class="pa-4">
+    <MudText Typo="Typo.h5">Fleximand Tests</MudText>
 
-<MudText>Current count: @currentCount</MudText>
 
-<MudButton StartIcon="@Icons.Material.Filled.PlusOne" Variant=Variant.Filled Color="Color.Primary" Command=FmdCount>Add 1</MudButton>
+    <MudGrid>
+        <MudItem xs="4">
+            <MudPaper Outlined="true" Class="pa-2 ma-4">
+                <MudText Typo="Typo.h6">Plain Snackbar</MudText>
+                <MudText>&nbsp;</MudText>
 
-<MudButton StartIcon="@Icons.Material.Filled.AddAlert" Variant=Variant.Outlined Color="Color.Primary" OnClick=AddSnackbar>Show snackbar</MudButton>
+                <MudButton StartIcon="@Icons.Material.Filled.AddAlert" Variant=Variant.Outlined Color="Color.Primary" OnClick=AddSnackbar>Show snackbar</MudButton>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="4">
+            <MudPaper Outlined="true" Class="pa-2 ma-4">
+                <MudText Typo="Typo.h6">Property Setter</MudText>
+                <MudText>Current count: @currentCount</MudText>
 
+                <MudButton StartIcon="@Icons.Material.Filled.ShortText" Variant=Variant.Filled Color="Color.Primary" Command=FmdCount>Set to 1</MudButton>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="4">
+            <MudPaper Outlined="true" Class="pa-2 ma-4">
+                <MudText Typo="Typo.h6">Property Manipulator</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
 
 @code {
     public int currentCount { get; set; } = 0;

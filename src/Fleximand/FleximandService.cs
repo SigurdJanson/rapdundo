@@ -105,14 +105,15 @@ namespace Fleximand.Core
                 if ((command as IFleximand)?.CanRevoke(commandParameter) ?? false) 
                     config.Action = "Undo"; //TODO: l10n
                 config.ActionColor = Color.Primary;
-                config.CloseAfterNavigation = true;
-                config.VisibleStateDuration = GracePeriod;
-                config.HideTransitionDuration = HideTransitionDuration;
                 config.Onclick = snackbar =>
                 {
                     command.Revoke(commandParameter);
                     return Task.CompletedTask;
                 };
+                config.CloseAfterNavigation = true;
+                config.VisibleStateDuration = GracePeriod;
+                config.HideTransitionDuration = HideTransitionDuration;
+                config.Icon = Icons.Material.Filled.Undo;
             });
  
             NotifyPageOnCommand?.Invoke(this, EventArgs.Empty);

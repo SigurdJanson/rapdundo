@@ -2,16 +2,18 @@
 
 @inject ISnackbar Snackbar
 
- 
-<h1>Hello, world!</h1>
+<MudPaper Class="pa-4" Elevation="0">
+    <h1>Hello, world!</h1>
 
-<MudPaper Class="pa-16 ma-2">
-    Welcome to your new app.
+    <MudPaper Class="pa-16">
+        Welcome to your new app.
 
-    <SurveyPrompt Title="How is Blazor working for you?" />
+        <SurveyPrompt Title="How is Blazor working for you?" />
+    </MudPaper>
+
+    <MudButton StartIcon="@Icons.Material.Filled.AddAlert" Variant=Variant.Outlined Color="Color.Primary" OnClick=AddSnackbar>Show snackbar</MudButton>
 </MudPaper>
 
-<MudButton StartIcon="@Icons.Material.Filled.AddAlert" Variant=Variant.Outlined Color="Color.Primary" OnClick=AddSnackbar>Show snackbar</MudButton>
 
 @code
 {
