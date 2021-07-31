@@ -33,13 +33,13 @@ namespace Fleximand.Core
 
 #nullable enable
         /// <inheritdoc/>
-        abstract public void Execute(object? parameter = null);
+        abstract public void Execute(object? parameter);
 
         /// <inheritdoc/>
         public event EventHandler<FmdExecEventArgs>? Executed;
 
         /// <inheritdoc/>
-        abstract public bool CanExecute(object? parameter = null);
+        abstract public bool CanExecute(object? parameter);
 
         /// <inheritdoc/>
         public event EventHandler? CanExecuteChanged;
@@ -59,7 +59,7 @@ namespace Fleximand.Core
         public event EventHandler<FmdExecEventArgs>? Revoked;
 
         /// <inheritdoc/>
-        abstract public bool CanRevoke(object? parameter = null);
+        abstract public bool CanRevoke(object? parameter);
 
         /// <inheritdoc/>
         public event EventHandler? CanRevokeChanged;

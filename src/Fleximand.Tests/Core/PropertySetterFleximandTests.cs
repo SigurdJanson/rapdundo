@@ -29,11 +29,11 @@ namespace Tests_Fleximand.Core
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name));
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            PropertySetterFmd.Execute();
+            PropertySetterFmd.Execute(NewName);
 
             // Assert
             Assert.Multiple(() =>
@@ -51,13 +51,13 @@ namespace Tests_Fleximand.Core
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name));
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            PropertySetterFmd.Execute();
+            PropertySetterFmd.Execute(NewName);
             Assume.That(TestObject.Name, Is.EqualTo(NewName));
-            PropertySetterFmd.Revoke();
+            PropertySetterFmd.Revoke(NewName);
 
             // Assert
             Assert.Multiple(() =>
@@ -75,17 +75,17 @@ namespace Tests_Fleximand.Core
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name));
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            PropertySetterFmd.Execute();
+            //PropertySetterFmd.Execute(NewName);
 
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.IsTrue(PropertySetterFmd.CanExecute());
-                Assert.AreEqual(1, PropertySetterFmd.ExecutionTimes);
+                Assert.IsTrue(PropertySetterFmd.CanExecute(NewName));
+                Assert.AreEqual(0, PropertySetterFmd.ExecutionTimes);
             });
         }
 
@@ -96,16 +96,16 @@ namespace Tests_Fleximand.Core
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name));
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
-            PropertySetterFmd.Execute();
+            PropertySetterFmd.Execute(NewName);
 
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.IsTrue(PropertySetterFmd.CanRevoke());
+                Assert.IsTrue(PropertySetterFmd.CanRevoke(NewName));
                 Assert.AreEqual(1, PropertySetterFmd.ExecutionTimes);
             });
         }
@@ -117,7 +117,7 @@ namespace Tests_Fleximand.Core
             const string NewName = "This is the new name of the guinea pig";
             // Arrange
             GuineaPig TestObject = new();
-            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name));
 
             // Act
             Assume.That(TestObject.Name, Is.EqualTo(DefaultName));
@@ -126,7 +126,7 @@ namespace Tests_Fleximand.Core
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.IsFalse(PropertySetterFmd.CanRevoke());
+                Assert.IsFalse(PropertySetterFmd.CanRevoke(NewName));
                 Assert.AreEqual(0, PropertySetterFmd.ExecutionTimes);
             });
         }
@@ -145,12 +145,12 @@ namespace Tests_Fleximand.Core
             void CatchCanRevoke(object sender, EventArgs e) => HasCanRevokeChangedBeenCaught = true;
 
             GuineaPig TestObject = new();
-            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name), NewName);
+            var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, nameof(GuineaPig.Name));
             PropertySetterFmd.CanRevokeChanged += CatchCanRevoke;
 
             // Act
-            Assume.That(PropertySetterFmd.CanRevoke(), Is.EqualTo(false));
-            PropertySetterFmd.Execute();
+            Assume.That(PropertySetterFmd.CanRevoke(NewName), Is.EqualTo(false));
+            PropertySetterFmd.Execute(NewName);
 
             // Assert
             Assert.IsTrue(HasCanRevokeChangedBeenCaught);
@@ -172,7 +172,7 @@ namespace Tests_Fleximand.Core
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "ProtectedName", NewName);
+                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "ProtectedName");
             });
         }
 
@@ -187,7 +187,7 @@ namespace Tests_Fleximand.Core
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "PrivateName", NewName);
+                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "PrivateName");
             });
         }
 
@@ -202,7 +202,7 @@ namespace Tests_Fleximand.Core
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() => {
-                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "Unknown Property", NewName);
+                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(TestObject, "Unknown Property");
             });
         }
 
@@ -215,7 +215,7 @@ namespace Tests_Fleximand.Core
             // Act
             // Assert
             Assert.Throws<ArgumentNullException>(() => {
-                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(null, nameof(GuineaPig.Name), NewName);
+                var PropertySetterFmd = new PropertySetterFleximand<GuineaPig, string>(null, nameof(GuineaPig.Name));
             });
         }
 
