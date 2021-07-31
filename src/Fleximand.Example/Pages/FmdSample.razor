@@ -1,4 +1,4 @@
-﻿@page "/counter"
+﻿@page "/fmdsample"
 
 @using Fleximand.Core
 
@@ -10,7 +10,7 @@
 
 
 <MudPaper Class="pa-4">
-    <MudText Typo="Typo.h5">Fleximand Tests</MudText>
+    <MudText Typo="Typo.h5">Fleximand Examples</MudText>
 
 
     <MudGrid>
@@ -39,12 +39,14 @@
     </MudGrid>
 </MudPaper>
 
+
+
 @code {
     protected int designatedCount = 11;
 
     public int currentCount { get; set; } = 0;
 
-    public PropertySetterFleximand<Counter, int> FmdCount;
+    public PropertySetterFleximand<FmdSample, int> FmdCount;
 
     protected override void OnInitialized()
     {
