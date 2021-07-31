@@ -26,8 +26,9 @@
             <MudPaper Outlined="true" Class="pa-2 ma-4">
                 <MudText Typo="Typo.h6">Property Setter</MudText>
                 <MudText>Current count: @currentCount</MudText>
-
-                <MudButton StartIcon="@Icons.Material.Filled.ShortText" Variant=Variant.Filled Color="Color.Primary" Command=FmdCount>Set to 1</MudButton>
+                <MudNumericField Label="Target" @bind-Value=designatedCount Min=0 />
+                <MudButton StartIcon="@Icons.Material.Filled.GolfCourse" Variant=Variant.Filled Color="Color.Primary"
+                           Command=@FmdCount CommandParameter=@designatedCount>Set to Target</MudButton>
             </MudPaper>
         </MudItem>
         <MudItem xs="4">
@@ -39,13 +40,15 @@
 </MudPaper>
 
 @code {
+    protected int designatedCount = 11;
+
     public int currentCount { get; set; } = 0;
 
     public PropertySetterFleximand<Counter, int> FmdCount;
 
     protected override void OnInitialized()
     {
-        FmdCount = new(this, nameof(currentCount), currentCount + 1);
+        FmdCount = new(this, nameof(currentCount));
         Undo.Register(FmdCount);
 
         Undo.NotifyPageOnCommand += (object o, EventArgs a) => StateHasChanged();
